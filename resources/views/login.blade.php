@@ -84,15 +84,6 @@
             </button>
 
         </form>
-
-        <!-- Register -->
-        <p class="mt-6 text-center text-sm text-gray-600">
-            ¿No tienes cuenta?
-            <a href="{{ route('register') }}" class="text-blue-600 hover:underline">
-                Regístrate
-            </a>
-        </p>
-
     </div>
 
 </body>
