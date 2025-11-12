@@ -1,39 +1,54 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <h1>Lista de Clientes</h1>
-    <a href="{{ route('clientes.create') }}">Crear Cliente</a>
+@section('title', 'Clientes')
 
-    @if(session('success'))
-        <p>{{ session('success') }}</p>
+@section('content')
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-3xl font-bold">Clientes</h1>
+        <a href="{{ route('clientes.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Nuevo Cliente</a>
+    </div>
+
+    @if (session('success'))
+        <div class="bg-green-600 text-white p-3 rounded mb-4">
+            {{ session('success') }}
+        </div>
     @endif
 
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-        </tr>
-
-        @foreach ($clientes as $cliente)
-        <tr>
-            <td>{{ $cliente->id }}</td>
-            <td>{{ $cliente->nombre }}</td>
-            <td>{{ $cliente->email }}</td>
-            <td>{{ $cliente->telefono }}</td>
-            <td>
-                <a href="{{ route('clientes.edit', $cliente) }}">Editar</a>
-                <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" style="display:inline">
-                    @csrf
-                    @method('DELETE')
-                    <button>Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
+    <table class="min-w-full bg-gray-800 rounded">
+        <thead>
+            <tr class="text-left text-gray-300">
+                <th class="py-2 px-4">ID</th>
+                <th class="py-2 px-4">Nombre</th>
+                <th class="py-2 px-4">Teléfono</th>
+                <th class="py-2 px-4">Email</th>
+                <th class="py-2 px-4">Dirección</th>
+                <th class="py-2 px-4 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($clientes as $cliente)
+                <tr class="border-t border-gray-700 hover:bg-gray-700 transition">
+                    <td class="py-2 px-4">{{ $cliente->id }}</td>
+                    <td class="py-2 px-4">{{ $cliente->nombre }}</td>
+                    <td class="py-2 px-4">{{ $cliente->telefono }}</td>
+                    <td class="py-2 px-4">{{ $cliente->email }}</td>
+                    <td class="py-2 px-4">{{ $cliente->direccion }}</td>
+                    <td class="py-2 px-4 text-center">
+                        {{-- Botón eliminar --}}
+                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este cliente?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-gray-400">No hay clientes registrados.</td>
+                </tr>
+            @endforelse
+        </tbody>
     </table>
-</div>
 @endsection

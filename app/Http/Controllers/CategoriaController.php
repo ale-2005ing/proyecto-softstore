@@ -7,45 +7,73 @@ use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
+    /**
+     * Mostrar todas las categorías
+     */
     public function index()
     {
-            $categorias = Categoria::all();
-    return view('categorias.index', compact('categorias'));
-
-        
+        $categorias = Categoria::all();
+        return view('categorias.index', compact('categorias'));
     }
 
- public function create()
+    /**
+     * Mostrar formulario de creación
+     */
+    public function create()
     {
         return view('categorias.create');
     }
 
+    /**
+     * Guardar nueva categoría en la base de datos
+     */
     public function store(Request $request)
     {
-        $categoria = Categoria::create($request->all());
-        return $categoria;
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+        ]);
+
+        Categoria::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        // ✅ Redirige al index con mensaje de éxito
+        return redirect()->route('categorias.index')->with('success', '✅ Categoría registrada exitosamente.');
     }
 
-    public function show($id)
-    {
-        return Categoria::findOrFail($id);
-    }
-    
-        public function edit(Categoria $categoria)
+    /**
+     * Mostrar formulario de edición
+     */
+    public function edit(Categoria $categoria)
     {
         return view('categorias.edit', compact('categoria'));
     }
 
-
-    public function update(Request $request, $id)
+    /**
+     * Actualizar categoría existente
+     */
+    public function update(Request $request, Categoria $categoria)
     {
-        $categoria = Categoria::findOrFail($id);
-        $categoria->update($request->all());
-        return $categoria;
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+        ]);
+
+        $categoria->update([
+            'nombre' => $request->nombre,
+        ]);
+
+        // ✅ Redirige con mensaje de éxito
+        return redirect()->route('categorias.index')->with('success', '✅ Categoría actualizada correctamente.');
     }
 
-    public function destroy($id)
+    /**
+     * Eliminar categoría
+     */
+    public function destroy(Categoria $categoria)
     {
-        return Categoria::destroy($id);
+        $categoria->delete();
+
+        // ✅ Redirige con mensaje de éxito
+        return redirect()->route('categorias.index')->with('success', '🗑️ Categoría eliminada correctamente.');
     }
 }

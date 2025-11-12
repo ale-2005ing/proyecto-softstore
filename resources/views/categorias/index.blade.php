@@ -83,12 +83,39 @@
         .btn-edit:hover {
             background: #059669;
         }
+
+        .btn-delete {
+            background: #dc2626; /* Rojo */
+            color: white;
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .btn-delete:hover {
+            background: #b91c1c;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 
 <body>
 
 <div class="container">
+    @if (session('success'))
+    <div style="background: #16a34a; color: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+        {{ session('success') }}
+    </div>
+@endif
+
 
     <!-- ✅ BOTÓN PARA VOLVER AL DASHBOARD -->
     <a href="{{ route('dashboard') }}">
@@ -102,12 +129,24 @@
     </a>
 
     @foreach ($categorias as $categoria)
-        <div class="category-item">
-            <span>{{ $categoria->nombre }}</span>
 
-            <a href="{{ route('categorias.edit', $categoria->id) }}">
-                <button class="btn-edit">Editar</button>
-            </a>
+    <div class="category-item">
+    <span>{{ $categoria->nombre }}</span>
+
+    <div>
+        <a href="{{ route('categorias.edit', $categoria->id) }}">
+            <button class="btn-edit">Editar</button>
+        </a>
+
+        <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn-delete" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?')">Eliminar</button>
+        </form>
+    </div>
+</div>
+
+            </div>
         </div>
     @endforeach
 

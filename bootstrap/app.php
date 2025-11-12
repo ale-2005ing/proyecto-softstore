@@ -11,7 +11,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // ✅ Registramos tu RoleMiddleware
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
+        /**
+         * OPCIONAL:
+         * Si quieres añadirlo al grupo web automáticamente
+         * (normalmente NO es necesario)
+         */
+        // $middleware->appendToGroup('web', [
+        //     \App\Http\Middleware\RoleMiddleware::class,
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

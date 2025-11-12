@@ -30,17 +30,15 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // Rutas de administración (solo admin)
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/panel', fn() => view('admin.panel'))->name('admin.panel');
-});
+Route::get('/admin/panel', function () {
+    return view('admin.panel');
+})->middleware(['auth', 'role:admin'])->name('admin.panel');
 
-Route::middleware(['auth', 'role:empleado'])->group(function () {
-    Route::get('/empleado/panel', fn() => view('empleado.panel'))->name('empleado.panel');
-});
+Route::get('/empleado/panel', function () {
+    return view('empleado.panel');
+})->middleware(['auth', 'role:empleado'])->name('empleado.panel');
 
-
-
-    // Aquí puedes agregar más rutas de empleado
+   // Aquí puedes agregar más rutas de empleado
 // Gestión de categorías
 Route::resource('categorias', CategoriaController::class);
 
