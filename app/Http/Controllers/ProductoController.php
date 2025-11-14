@@ -24,20 +24,20 @@ class ProductoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:100',
-            'precio' => 'required|numeric|min:0',
-            'stock' => 'required|integer',
-            'categoria_id' => 'required|exists:categorias,id',
-            'proveedor_id' => 'required|exists:proveedor,id',
-        ]);
+    $request->validate([
+        'nombre' => 'required|string|max:100',
+        'descripcion' => 'required|string|max:100',
+        'precio' => 'required|numeric|min:0',
+        'stock' => 'required|integer',
+        'categoria_id' => 'required|exists:categorias,id',
+        'proveedor_id' => 'required|exists:proveedores,id',
+    ]);
+    
+    Producto::create($request->all());
 
-        Producto::create($request->all());
-        return redirect()->route('productos.index')->with('success', 'Producto creado');
-        dd($request->all());
+    return redirect()->route('productos.index')->with('success', 'Producto creado con éxito.');
     }
-
+    
     public function edit(Producto $producto)
     {
         $categorias = Categoria::all();

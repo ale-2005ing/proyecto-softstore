@@ -28,11 +28,11 @@ public function store(LoginRequest $request): RedirectResponse
 
     $user = $request->user();
 
-    if ($user->rol === 'admin') {
+    if ($user->role === 'admin') {
         return redirect()->route('admin.panel');
     }
 
-    if ($user->rol === 'empleado') {
+    if ($user->role === 'empleado') {
         return redirect()->route('empleado.panel');
     }
 

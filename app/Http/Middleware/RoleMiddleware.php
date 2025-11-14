@@ -22,7 +22,7 @@ class RoleMiddleware
         return redirect('/login');
     }
 
-    if ($role && $request->user()->rol !== $role) {
+    if ($role && $request->user()->role !== $role) {
         return abort(403, 'NO TIENES PERMISO PARA INGRESAR AQUÍ');
     }
 

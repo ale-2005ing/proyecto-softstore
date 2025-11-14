@@ -50,3 +50,9 @@ Route::resource('clientes', ClienteController::class);
 
 // Carga de rutas de autenticación
 require __DIR__.'/auth.php';
+
+use App\Http\Controllers\ReporteController;
+
+Route::get('/reportes', [ReporteController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('reportes.index');
