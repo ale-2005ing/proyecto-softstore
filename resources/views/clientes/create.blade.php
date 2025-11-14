@@ -3,9 +3,13 @@
 @section('title', 'Nuevo Cliente')
 
 @section('content')
-    <h1 class="text-3xl font-bold mb-6">Registrar Cliente</h1>
 
-    <form action="{{ route('clientes.store') }}" method="POST" class="max-w-md bg-gray-800 p-6 rounded">
+<div class="min-h-screen flex flex-col justify-center items-center">
+
+    <h1 class="text-3xl font-bold mb-6 text-center">Registrar Cliente</h1>
+
+    <form action="{{ route('clientes.store') }}" method="POST" 
+          class="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg">
         @csrf
 
         <div class="mb-4">
@@ -29,8 +33,17 @@
         </div>
 
         <div class="flex justify-between">
-            <a href="{{ route('clientes.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">Volver</a>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Guardar</button>
+            <a href="{{ route('clientes.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">
+                Volver
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                Guardar
+            </button>
         </div>
+
     </form>
+
+</div>
+
 @endsection
+

@@ -3,16 +3,13 @@
 @section('title', 'Productos')
 
 @section('content')
-
-<div class="pagina-productos">
-
 <style>
-    .pagina-productos {
+    body {
         background: #0f172a;
         color: #e2e8f0;
-        padding: 30px;
-        min-height: 100vh;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+        margin: 0;
+        padding: 30px;
     }
 
     h1 {
@@ -157,6 +154,5 @@
         @endforelse
     </tbody>
 </table>
-
-</div> {{-- cierre de pagina-productos --}}
 @endsection
+
