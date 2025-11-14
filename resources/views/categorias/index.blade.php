@@ -1,123 +1,119 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado de Categorías</title>
+@extends('layouts.app')
 
-    <style>
-        body {
-            background: #111827; /* Fondo oscuro */
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            color: white;
-        }
+@section('title', 'Listado de Categorías')
 
-        .container {
-            background: #1f2937; /* Caja oscura */
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.6);
-            width: 70%;
-            margin: 0 auto;
-        }
+@section('content')
 
-        h1 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #60a5fa; /* Azul claro */
-            margin-bottom: 20px;
-        }
+<style>
+    body {
+        background: #111827; /* Fondo oscuro */
+        font-family: Arial, sans-serif;
+        padding: 30px;
+        color: white;
+    }
 
-        .btn-back, .btn-primary {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+    .container-box {
+        background: #1f2937; /* Caja oscura */
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.6);
+        width: 70%;
+        margin: 0 auto;
+    }
 
-        .btn-back {
-            background: #374151; /* Gris oscuro */
-            color: #e5e7eb;
-            margin-bottom: 20px;
-        }
+    h1 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #60a5fa; /* Azul claro */
+        margin-bottom: 20px;
+    }
 
-        .btn-back:hover {
-            background: #4b5563;
-        }
+    .btn-back, .btn-primary {
+        padding: 10px 18px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-        .btn-primary {
-            background: #2563eb; /* Azul */
-            color: white;
-            margin-bottom: 25px;
-        }
+    .btn-back {
+        background: #374151; /* Gris oscuro */
+        color: #e5e7eb;
+        margin-bottom: 20px;
+    }
 
-        .btn-primary:hover {
-            background: #1e40af;
-        }
+    .btn-back:hover {
+        background: #4b5563;
+    }
 
-        .category-item {
-            background: #111827;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #374151;
-        }
+    .btn-primary {
+        background: #2563eb; /* Azul */
+        color: white;
+        margin-bottom: 25px;
+    }
 
-        .btn-edit {
-            background: #10b981; /* Verde */
-            color: white;
-            padding: 7px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
+    .btn-primary:hover {
+        background: #1e40af;
+    }
 
-        .btn-edit:hover {
-            background: #059669;
-        }
+    .category-item {
+        background: #111827;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid #374151;
+    }
 
-        .btn-delete {
-            background: #dc2626; /* Rojo */
-            color: white;
-            padding: 7px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
+    .btn-edit {
+        background: #10b981; /* Verde */
+        color: white;
+        padding: 7px 12px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+    }
 
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
+    .btn-edit:hover {
+        background: #059669;
+    }
 
-        .actions {
-            display: flex;
-            align-items: center;
-        }
-    </style>
-</head>
+    .btn-delete {
+        background: #dc2626; /* Rojo */
+        color: white;
+        padding: 7px 12px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 10px;
+    }
 
-<body>
+    .btn-delete:hover {
+        background: #b91c1c;
+    }
 
-<div class="container">
+    .actions {
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<div class="container-box">
+
     @if (session('success'))
-    <div style="background: #16a34a; color: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
-        {{ session('success') }}
-    </div>
-@endif
+        <div style="background: #16a34a; color: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+            {{ session('success') }}
+        </div>
+    @endif
 
-
-    <!-- ✅ BOTÓN PARA VOLVER AL DASHBOARD -->
+    <!-- Botón Volver -->
     <a href="{{ route('dashboard') }}">
         <button class="btn-back">⬅ Volver al Dashboard</button>
     </a>
@@ -128,29 +124,27 @@
         <button class="btn-primary">+ Crear Categoría</button>
     </a>
 
+    <!-- Listado -->
     @foreach ($categorias as $categoria)
+        <div class="category-item">
+            <span>{{ $categoria->nombre }}</span>
 
-    <div class="category-item">
-    <span>{{ $categoria->nombre }}</span>
+            <div class="actions">
+                <a href="{{ route('categorias.edit', $categoria->id) }}">
+                    <button class="btn-edit">Editar</button>
+                </a>
 
-    <div>
-        <a href="{{ route('categorias.edit', $categoria->id) }}">
-            <button class="btn-edit">Editar</button>
-        </a>
-
-        <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn-delete" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?')">Eliminar</button>
-        </form>
-    </div>
-</div>
-
+                <form action="{{ route('categorias.destroy', $categoria->id) }}" 
+                      method="POST"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-delete">Eliminar</button>
+                </form>
             </div>
         </div>
     @endforeach
 
 </div>
 
-</body>
-</html>
+@endsection

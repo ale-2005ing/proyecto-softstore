@@ -4,53 +4,159 @@
 
 @section('content')
 
-<h1 class="text-2xl mb-4 text-white">Productos</h1>
+<div class="pagina-productos">
 
-<a href="{{ route('productos.create') }}"
-   class="bg-blue-600 px-4 py-2 rounded text-white hover:bg-blue-500 transition">
-    Nuevo producto
-</a>
+<style>
+    .pagina-productos {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 30px;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
 
-<table class="w-full mt-6 border border-gray-700 rounded overflow-hidden">
-    <thead class="bg-gray-800 text-blue-400">
+    h1 {
+        color: #60a5fa;
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    a.btn {
+        background: #334155;
+        color: #f8fafc;
+        padding: 10px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    a.btn:hover {
+        background: #475569;
+    }
+
+    .btn-blue {
+        background: #3b82f6;
+    }
+
+    .btn-blue:hover {
+        background: #2563eb;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    th, td {
+        padding: 12px 16px;
+        text-align: left;
+    }
+
+    th {
+        background: #334155;
+        color: #93c5fd;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+        background: #0f172a;
+    }
+
+    tr:hover {
+        background: #1e293b;
+    }
+
+    .acciones a, .acciones button {
+        color: #93c5fd;
+        text-decoration: none;
+        margin-right: 10px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    .acciones a:hover {
+        color: #60a5fa;
+    }
+
+    .acciones button {
+        color: #f87171;
+    }
+
+    .acciones button:hover {
+        color: #ef4444;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        color: #94a3b8;
+    }
+</style>
+
+<div class="top-bar">
+    <a href="{{ route('dashboard') }}" class="btn">⬅ Volver al Dashboard</a>
+    <a href="{{ route('productos.create') }}" class="btn btn-blue">➕ Nuevo Producto</a>
+</div>
+
+<h1>Listado de Productos</h1>
+
+<table>
+    <thead>
         <tr>
-            <th class="p-2 text-left">Nombre</th>
-            <th class="p-2 text-left">Categoría</th>
-            <th class="p-2 text-left">Proveedor</th>
-            <th class="p-2 text-left">Stock</th>
-            <th class="p-2 text-left">Precio</th>
-            <th class="p-2 text-left">Acciones</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Acciones</th>
         </tr>
     </thead>
-
     <tbody>
-        @foreach ($productos as $item)
-        <tr class="border-t border-gray-700">
-            <td class="p-2">{{ $item->nombre }}</td>
-            <td class="p-2">{{ $item->categoria?->nombre }}</td>
-            <td class="p-2">{{ $item->proveedor?->nombre }}</td>
-            <td class="p-2">{{ $item->stock }}</td>
-            <td class="p-2">${{ $item->precio }}</td>
+        @forelse($productos as $producto)
+        <tr>
+            <td>{{ $producto->nombre }}</td>
+            <td>{{ $producto->descripcion }}</td>
+            <td>{{ $producto->categoria?->nombre ?? '—' }}</td>
+            <td>{{ $producto->proveedor?->nombre ?? '—' }}</td>
+            <td>{{ $producto->stock }}</td>
+            <td>${{ number_format($producto->precio, 2) }}</td>
+            <td class="acciones">
+                <a href="{{ route('productos.edit', $producto->id) }}">Editar</a>
 
-            <td class="p-2 flex gap-2">
-
-                <a href="{{ route('productos.edit', $item) }}"
-                   class="text-blue-400 hover:underline">
-                    Editar
-                </a>
-
-                <form action="{{ route('productos.destroy', $item) }}" method="POST"
-                      onsubmit="return confirm('¿Eliminar producto?');">
-                    @csrf @method('DELETE')
-                    <button class="text-red-400 hover:underline">
-                        Eliminar
-                    </button>
+                <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" style="display:inline"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit">Eliminar</button>
                 </form>
-
             </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+            <td colspan="7" class="no-data">No hay productos registrados</td>
+        </tr>
+        @endforelse
     </tbody>
 </table>
 
+</div> {{-- cierre de pagina-productos --}}
 @endsection
