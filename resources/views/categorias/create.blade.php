@@ -1,120 +1,56 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Crear Categoría</title>
+@extends('layouts.app')
 
-<style>
-    body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-        background: #111827; /* Fondo oscuro */
-        margin: 0;
-        padding: 40px;
-        color: white;
-    }
+@section('title', 'Crear Categoría')
 
-    /* Botón regresar */
-    .btn-back {
-        display: inline-block;
-        background: #374151; /* Gris oscuro */
-        color: #e5e7eb;
-        padding: 10px 18px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.2s;
-        margin-bottom: 25px;
-        font-weight: 500;
-    }
+@section('content')
 
-    .btn-back:hover {
-        background: #4b5563;
-    }
+<div class="bg-gray-900 flex justify-center px-4 py-10">
 
-    /* Tarjeta */
-    .container {
-        max-width: 550px;
-        margin: auto;
-        background: #1f2937; /* Caja oscura */
-        padding: 35px;
-        border-radius: 18px;
-        box-shadow: 0px 4px 14px rgba(0,0,0,0.5);
-    }
+    <div class="bg-gray-800 w-full max-w-lg rounded-2xl shadow-lg p-6 mt-4">
 
-    h1 {
-        font-size: 28px;
-        color: #60a5fa; /* Azul claro */
-        font-weight: 700;
-        margin-bottom: 25px;
-    }
+        {{-- Título --}}
+        <h1 class="text-2xl text-white font-semibold mb-6 text-center">
+            Crear Nueva Categoría
+        </h1>
 
-    label {
-        display: block;
-        color: #e5e7eb;
-        font-size: 15px;
-        margin-bottom: 6px;
-        font-weight: 600;
-    }
+        {{-- Botón volver --}}
+        <div class="mb-6">
+            <a href="{{ route('categorias.index') }}"
+               class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-500 transition">
+                ⬅ Volver al Listado
+            </a>
+        </div>
 
-    input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #374151;
-        border-radius: 10px;
-        font-size: 15px;
-        margin-bottom: 22px;
-        background: #111827;
-        color: white;
-        transition: 0.2s;
-    }
-
-    input[type="text"]:focus {
-        border-color: #2563eb;
-        outline: none;
-        background: #1f2937;
-        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
-    }
-
-    /* Botón guardar */
-    .btn-primary {
-        width: 100%;
-        background: #2563eb;
-        border: none;
-        padding: 14px;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .btn-primary:hover {
-        background: #1d4ed8;
-    }
-
-</style>
-</head>
-
-<body>
-
-    <!-- Botón regresar -->
-    <a href="{{ route('categorias.index') }}" class="btn-back">
-        ⬅ Regresar al Listado de Categorías
-    </a>
-
-    <div class="container">
-        <h1>Crear Categoría</h1>
-
+        {{-- Formulario --}}
         <form action="{{ route('categorias.store') }}" method="POST">
             @csrf
 
-            <label>Nombre</label>
-            <input type="text" name="nombre" placeholder="Escribe el nombre de la categoría..." required>
+            {{-- Nombre --}}
+            <div class="mb-6">
+                <label class="block text-gray-300 mb-1">Nombre de la Categoría</label>
+                <input type="text" name="nombre" required
+                       class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white outline-none focus:ring focus:ring-blue-500"
+                       placeholder="Escribe el nombre de la categoría">
+            </div>
 
-            <button type="submit" class="btn-primary">Guardar Categoría</button>
+            {{-- Botones --}}
+            <div class="flex justify-between">
+                <a href="{{ route('categorias.index') }}"
+                   class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-500 transition">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition">
+                    Guardar
+                </button>
+            </div>
+
         </form>
-    </div>
 
-</body>
-</html>
+    </div>
+</div>
+
+@endsection
+
+
