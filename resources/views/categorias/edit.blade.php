@@ -1,145 +1,51 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Editar Categoría</title>
+@extends('layouts.app')
 
-<style>
-    body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-        background: #0f172a; /* Oscuro */
-        margin: 0;
-        padding: 40px;
-        color: #e2e8f0;
-    }
+@section('title', 'Editar Categoría')
 
-    /* Botón regresar */
-    .btn-back {
-        display: inline-block;
-        background: #334155;
-        color: #e2e8f0;
-        padding: 10px 18px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.2s;
-        margin-bottom: 25px;
-        font-weight: 500;
-    }
+@section('content')
+<div class="bg-gray-900 flex justify-center px-4 py-10">
 
-    .btn-back:hover {
-        background: #475569;
-    }
+    <div class="bg-gray-800 w-full max-w-lg rounded-2xl shadow-lg p-6 mt-4">
 
-    /* Tarjeta */
-    .container {
-        max-width: 550px;
-        margin: auto;
-        background: #1e293b; /* Azul oscuro */
-        padding: 35px;
-        border-radius: 18px;
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.4);
-    }
+        {{-- Título --}}
+        <h1 class="text-2xl text-white font-semibold mb-6 text-center">
+            Editar Categoría
+        </h1>
 
-    h1 {
-        font-size: 28px;
-        color: #f8fafc;
-        font-weight: 700;
-        margin-bottom: 25px;
-    }
-
-    label {
-        display: block;
-        color: #cbd5e1;
-        font-size: 15px;
-        margin-bottom: 6px;
-        font-weight: 500;
-    }
-
-    input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #475569;
-        border-radius: 10px;
-        font-size: 15px;
-        margin-bottom: 22px;
-        background: #0f172a;
-        color: #f8fafc;
-        transition: 0.2s;
-    }
-
-    input[type="text"]:focus {
-        border-color: #6366f1;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4);
-        background: #1e293b;
-    }
-
-    /* Botón actualizar */
-    .btn-primary {
-        width: 100%;
-        background: #6366f1;
-        border: none;
-        padding: 14px;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-        margin-bottom: 10px;
-    }
-
-    .btn-primary:hover {
-        background: #4f46e5;
-    }
-
-    /* Botón cancelar */
-    .btn-cancel {
-        width: 100%;
-        background: #64748b;
-        border: none;
-        padding: 14px;
-        border-radius: 12px;
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .btn-cancel:hover {
-        background: #475569;
-    }
-</style>
-</head>
-
-<body>
-    <div class="container">
-        <h1>Editar Categoría</h1>
-
+        {{-- Formulario --}}
         <form action="{{ route('categorias.update', $categoria->id) }}" method="POST">
             @csrf
             @method('PUT')
 
-            <label for="nombre">Nombre:</label>
-            <input 
-                type="text" 
-                id="nombre" 
-                name="nombre" 
-                value="{{ $categoria->nombre }}"
-                required
-            >
+            {{-- Nombre --}}
+            <div class="mb-6">
+                <label class="block text-gray-300 mb-1">Nombre de la Categoría</label>
+                <input type="text"
+                       name="nombre"
+                       value="{{ $categoria->nombre }}"
+                       required
+                       class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white outline-none focus:ring focus:ring-blue-500"
+                       placeholder="Escribe el nombre de la categoría">
+            </div>
 
-            <button type="submit" class="btn-primary">Actualizar Categoría</button>
+            {{-- Botones --}}
+            <div class="flex justify-between">
+                <a href="{{ route('categorias.index') }}"
+                   class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-500 transition">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition">
+                    Actualizar
+                </button>
+            </div>
+
         </form>
 
-        <a href="{{ route('categorias.index') }}">
-            <button class="btn-cancel">Cancelar</button>
-        </a>
     </div>
+</div>
+@endsection
 
-</body>
-</html>
 
 

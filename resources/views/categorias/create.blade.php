@@ -13,14 +13,6 @@
             Crear Nueva Categoría
         </h1>
 
-        {{-- Botón volver --}}
-        <div class="mb-6">
-            <a href="{{ route('categorias.index') }}"
-               class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-500 transition">
-                ⬅ Volver al Listado
-            </a>
-        </div>
-
         {{-- Formulario --}}
         <form action="{{ route('categorias.store') }}" method="POST">
             @csrf
