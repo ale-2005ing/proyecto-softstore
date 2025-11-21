@@ -6,6 +6,11 @@
     <div class="flex justify-between items-center mb-4">
         <h1 class="text-3xl font-bold">Clientes</h1>
         <a href="{{ route('clientes.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Nuevo Cliente</a>
+   
+    <a href="{{ route('admin.panel') }}"
+       class="bg-gray-700 px-4 py-2 rounded text-white hover:bg-gray-600 transition">
+        ← Volver al Dashboard
+    </a>
     </div>
 
     @if (session('success'))

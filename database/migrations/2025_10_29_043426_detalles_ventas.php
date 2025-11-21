@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('detalle_ventas', function (Blueprint $table) {
         $table->id();
+
         $table->unsignedBigInteger('venta_id');
         $table->unsignedBigInteger('producto_id');
+        
         $table->integer('cantidad');
-        $table->decimal('precio', 10, 2);
+        $table->decimal('precio', 10, 2); // precio_unitario
+        $table->decimal('subtotal', 12, 2); // precio * cantidad
+
         $table->timestamps();
 
         $table->foreign('venta_id')->references('id')->on('ventas')->cascadeOnDelete();

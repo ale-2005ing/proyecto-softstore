@@ -13,7 +13,6 @@ class Cliente extends Model
         'direccion',
         'telefono',
         'email',
-        'direccion'
     ];
         
 }

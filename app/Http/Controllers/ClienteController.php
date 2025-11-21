@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\ClienteCreadoNotification;
+use App\Notifications\ClienteEliminadoNotification;
+use Illuminate\Support\Facades\Auth;
+
 
 class ClienteController extends Controller
 {
@@ -36,7 +41,18 @@ class ClienteController extends Controller
             'direccion'   => 'nullable|string|max:255',
         ]);
 
-        Cliente::create($request->all());
+        $cliente = Cliente::create($request->all());
+
+        // 🔔 Notificar al usuario autenticado
+        auth::user()->notify(new ClienteCreadoNotification($cliente));
+
+        // 🔔 Opcionalmente, notificar también a todos los administradores
+        $admins = User::where('role', 'admin')->get();
+        foreach($admins as $admin) {
+            if($admin->id !== auth::id()) { // Evitar notificación duplicada
+                $admin->notify(new ClienteCreadoNotification($cliente));
+            }
+        }
 
         return redirect()->route('clientes.index')
             ->with('success', 'Cliente creado correctamente');
@@ -81,7 +97,21 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
+        // Guardar el nombre antes de eliminar
+        $nombreCliente = $cliente->nombre;
+        
         $cliente->delete();
+
+        // 🔔 Notificar al usuario autenticado
+        auth::user()->notify(new ClienteEliminadoNotification($nombreCliente));
+
+        // 🔔 Opcionalmente, notificar también a todos los administradores
+        $admins = User::where('role', 'admin')->get();
+        foreach($admins as $admin) {
+            if($admin->id !== auth::id()) { // Evitar notificación duplicada
+                $admin->notify(new ClienteEliminadoNotification($nombreCliente));
+            }
+        }
 
         return redirect()->route('clientes.index')
             ->with('success', 'Cliente eliminado correctamente');

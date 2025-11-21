@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categoria;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\CategoriaCreadaNotification;
+use App\Notifications\CategoriaEliminadaNotification;
+use Illuminate\Support\Facades\Auth;
+
 
 class CategoriaController extends Controller
 {
@@ -33,9 +38,20 @@ class CategoriaController extends Controller
             'nombre' => 'required|string|max:255',
         ]);
 
-        Categoria::create([
+        $categoria = Categoria::create([
             'nombre' => $request->nombre,
         ]);
+
+        // 🔔 Notificar al usuario autenticado
+        auth::user()->notify(new CategoriaCreadaNotification($categoria));
+
+        // 🔔 Opcionalmente, notificar también a todos los administradores
+        $admins = User::where('role', 'admin')->get();
+        foreach($admins as $admin) {
+            if($admin->id !== auth::id()) { // Evitar notificación duplicada
+                $admin->notify(new CategoriaCreadaNotification($categoria));
+            }
+        }
 
         // ✅ Redirige al index con mensaje de éxito
         return redirect()->route('categorias.index')->with('success', '✅ Categoría registrada exitosamente.');
@@ -71,7 +87,21 @@ class CategoriaController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
+        // Guardar el nombre antes de eliminar
+        $nombreCategoria = $categoria->nombre;
+        
         $categoria->delete();
+
+        // 🔔 Notificar al usuario autenticado
+        auth::user()->notify(new CategoriaEliminadaNotification($nombreCategoria));
+
+        // 🔔 Opcionalmente, notificar también a todos los administradores
+        $admins = User::where('role', 'admin')->get();
+        foreach($admins as $admin) {
+            if($admin->id !== auth::id()) { // Evitar notificación duplicada
+                $admin->notify(new CategoriaEliminadaNotification($nombreCategoria));
+            }
+        }
 
         // ✅ Redirige con mensaje de éxito
         return redirect()->route('categorias.index')->with('success', '🗑️ Categoría eliminada correctamente.');

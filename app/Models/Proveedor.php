@@ -11,11 +11,13 @@ class Proveedor extends Model
 
     protected $fillable = [
         'nombre',
-        'descripcion',
-        'precio',
-        'stock',
-        'categoria_id',
-        'proveedor_id'
-    ];
-}
+        'telefono',
+        'email',
 
+    ];
+
+    public function entradas()
+    {
+        return $this->hasMany(Entrada::class);
+    }
+}

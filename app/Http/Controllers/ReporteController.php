@@ -15,7 +15,7 @@ class ReporteController extends Controller
         // Consultas según el tipo de reporte
         switch ($filtro) {
             case 'bajo':
-                $productos = Producto::where('stock', '<=', 10)->get(); // bajo stock
+                $productos = Producto::where('stock', '<=', 5)->get(); // bajo stock
                 $titulo = 'Productos con Stock Bajo';
                 break;
 

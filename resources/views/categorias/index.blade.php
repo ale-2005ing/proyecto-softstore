@@ -7,14 +7,14 @@
 
     <style>
         body {
-            background: #111827; /* Fondo oscuro */
+            background: #111827;
             font-family: Arial, sans-serif;
             padding: 30px;
             color: white;
         }
 
         .container {
-            background: #1f2937; /* Caja oscura */
+            background: #1f2937;
             padding: 25px;
             border-radius: 14px;
             box-shadow: 0 0 15px rgba(0,0,0,0.6);
@@ -25,7 +25,7 @@
         h1 {
             font-size: 28px;
             font-weight: bold;
-            color: #60a5fa; /* Azul claro */
+            color: #60a5fa;
             margin-bottom: 20px;
         }
 
@@ -39,7 +39,7 @@
         }
 
         .btn-back {
-            background: #374151; /* Gris oscuro */
+            background: #374151;
             color: #e5e7eb;
             margin-bottom: 20px;
         }
@@ -49,7 +49,7 @@
         }
 
         .btn-primary {
-            background: #2563eb; /* Azul */
+            background: #2563eb;
             color: white;
             margin-bottom: 25px;
         }
@@ -70,7 +70,7 @@
         }
 
         .btn-edit {
-            background: #10b981; /* Verde */
+            background: #10b981;
             color: white;
             padding: 7px 12px;
             border-radius: 6px;
@@ -85,7 +85,7 @@
         }
 
         .btn-delete {
-            background: #dc2626; /* Rojo */
+            background: #dc2626;
             color: white;
             padding: 7px 12px;
             border-radius: 6px;
@@ -99,53 +99,50 @@
         .btn-delete:hover {
             background: #b91c1c;
         }
-
-        .actions {
-            display: flex;
-            align-items: center;
-        }
     </style>
 </head>
 
 <body>
 
 <div class="container">
+
+    {{-- ALERTA DE ÉXITO --}}
     @if (session('success'))
-    <div style="background: #16a34a; color: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
-        {{ session('success') }}
-    </div>
-@endif
+        <div style="background: #16a34a; color: white; padding: 12px; border-radius: 10px; margin-bottom: 15px;">
+            {{ session('success') }}
+        </div>
+    @endif
 
-
-    <!-- ✅ BOTÓN PARA VOLVER AL DASHBOARD -->
+    {{-- BOTÓN VOLVER --}}
     <a href="{{ route('dashboard') }}">
         <button class="btn-back">⬅ Volver al Dashboard</button>
     </a>
 
     <h1>Listado de Categorías</h1>
 
+    {{-- BOTÓN CREAR --}}
     <a href="{{ route('categorias.create') }}">
         <button class="btn-primary">+ Crear Categoría</button>
     </a>
 
+    {{-- LISTADO DE CATEGORÍAS --}}
     @foreach ($categorias as $categoria)
+        <div class="category-item">
+            <span>{{ $categoria->nombre }}</span>
 
-    <div class="category-item">
-    <span>{{ $categoria->nombre }}</span>
+            <div>
+                <a href="{{ route('categorias.edit', $categoria->id) }}">
+                    <button class="btn-edit">Editar</button>
+                </a>
 
-    <div>
-        <a href="{{ route('categorias.edit', $categoria->id) }}">
-            <button class="btn-edit">Editar</button>
-        </a>
-
-        <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn-delete" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?')">Eliminar</button>
-        </form>
-    </div>
-</div>
-
+                <form action="{{ route('categorias.destroy', $categoria->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-delete"
+                        onclick="return confirm('¿Seguro que deseas eliminar esta categoría?')">
+                        Eliminar
+                    </button>
+                </form>
             </div>
         </div>
     @endforeach
