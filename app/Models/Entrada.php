@@ -17,6 +17,7 @@ class Entrada extends Model
         return $this->belongsTo(Proveedor::class);
     }
 
+    // Relación uno a muchos con detalles
     public function detalles()
     {
         return $this->hasMany(EntradaDetalle::class);

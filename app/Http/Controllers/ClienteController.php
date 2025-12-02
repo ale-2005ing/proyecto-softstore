@@ -97,6 +97,18 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
+
+    // Bloquear eliminación si está en mora
+        if ($cliente->estado === 'moroso') {
+        return redirect()->back()
+            ->with('error', 'No puedes eliminar un cliente que está en mora.');
+    }
+    
+    // Guardar el nombre antes de eliminar
+    $nombreCliente = $cliente->nombre;
+
+    $cliente->delete();
+
         // Guardar el nombre antes de eliminar
         $nombreCliente = $cliente->nombre;
         
@@ -115,5 +127,20 @@ class ClienteController extends Controller
 
         return redirect()->route('clientes.index')
             ->with('success', 'Cliente eliminado correctamente');
+    }
+    public function cambiarEstado($id)
+{
+    $cliente = Cliente::findOrFail($id);
+
+    // lógica de bloqueo
+    if ($cliente->estado === 'activo') {
+        $cliente->estado = 'moroso';
+    } elseif ($cliente->estado === 'moroso') {
+        $cliente->estado = 'activo';
+    }
+
+    $cliente->save();
+
+    return redirect()->back()->with('success', 'Estado actualizado correctamente.');
     }
 }

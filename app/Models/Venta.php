@@ -6,7 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 class Venta extends Model
 {
     protected $table = 'ventas';
-    protected $fillable = ['user_id','cliente_id','numero','fecha','subtotal','impuesto','total','estado'];
+    protected $fillable = [
+        'user_id',
+        'cliente_id',
+        'numero',
+        'fecha',
+        'subtotal',
+        'impuesto',
+        'total',
+        'estado'
+    ];
 
     protected $casts = ['fecha' => 'datetime'];
 

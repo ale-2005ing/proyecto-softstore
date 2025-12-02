@@ -31,30 +31,63 @@ class CategoriaController extends Controller
 
     /**
      * Guardar nueva categoría en la base de datos
+     * Soporta tanto peticiones normales como AJAX desde modales
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-        ]);
+        try {
+            $request->validate([
+                'nombre' => 'required|string|max:255|unique:categorias,nombre',
+            ]);
 
-        $categoria = Categoria::create([
-            'nombre' => $request->nombre,
-        ]);
+            $categoria = Categoria::create([
+                'nombre' => $request->nombre,
+            ]);
 
-        // 🔔 Notificar al usuario autenticado
-        auth::user()->notify(new CategoriaCreadaNotification($categoria));
+            // 🔔 Notificar al usuario autenticado
+            auth::user()->notify(new CategoriaCreadaNotification($categoria));
 
-        // 🔔 Opcionalmente, notificar también a todos los administradores
-        $admins = User::where('role', 'admin')->get();
-        foreach($admins as $admin) {
-            if($admin->id !== auth::id()) { // Evitar notificación duplicada
-                $admin->notify(new CategoriaCreadaNotification($categoria));
+            // 🔔 Opcionalmente, notificar también a todos los administradores
+            $admins = User::where('role', 'admin')->get();
+            foreach($admins as $admin) {
+                if($admin->id !== auth::id()) { // Evitar notificación duplicada
+                    $admin->notify(new CategoriaCreadaNotification($categoria));
+                }
             }
-        }
 
-        // ✅ Redirige al index con mensaje de éxito
-        return redirect()->route('categorias.index')->with('success', '✅ Categoría registrada exitosamente.');
+            // ✅ Si es una petición AJAX (desde el modal), devolver JSON
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'categoria' => $categoria,
+                    'message' => '✅ Categoría registrada exitosamente.'
+                ]);
+            }
+
+            // ✅ Si es petición normal, redirigir
+            return redirect()->route('categorias.index')->with('success', '✅ Categoría registrada exitosamente.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejo de errores de validación
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error de validación: ' . implode(', ', $e->validator->errors()->all())
+                ], 422);
+            }
+            throw $e;
+
+        } catch (\Exception $e) {
+            // Manejo de otros errores
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al crear la categoría: ' . $e->getMessage()
+                ], 500);
+            }
+            
+            return back()->with('error', 'Error al crear la categoría: ' . $e->getMessage());
+        }
     }
 
     /**

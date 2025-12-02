@@ -1,62 +1,118 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="p-8 text-white bg-gray-900 min-h-screen">
+@section('title', 'Proveedores')
 
-    <div class="flex justify-between mb-6">
-        <h1 class="text-3xl font-bold">Lista de Proveedores</h1>
-        <a href="{{ route('proveedores.create') }}"
-           class="bg-blue-600 px-4 py-2 rounded">
-            + Nuevo Proveedor
+@section('content')
+    <div class="flex justify-between items-center mb-6 opacity-0 animate-[fadeInDown_0.6s_ease-out_forwards]">
+        <h1 class="text-3xl font-bold text-slate-800">Proveedores</h1>
+        <a href="{{ route('proveedores.create') }}" 
+           class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-lg font-semibold shadow-sm transition-all duration-300 flex items-center gap-2 hover:scale-105 hover:shadow-lg group">
+            <svg class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Nuevo Proveedor
         </a>
     </div>
 
     @if (session('success'))
-        <div class="bg-green-600 p-3 rounded mb-4">
-            {{ session('success') }}
+        <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-3 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.2s_forwards]">
+            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
-    <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
-        <thead>
-            <tr class="bg-gray-700 text-left">
-                <th class="p-3">ID</th>
-                <th class="p-3">Nombre</th>
-                <th class="p-3">Teléfono</th>
-                <th class="p-3">Email</th>
-                <th class="p-3">Acciones</th>
-            </tr>
-        </thead>
+    @if (session('error'))
+        <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-3 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.2s_forwards]">
+            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z"/>
+            </svg>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
 
-        <tbody>
-            @foreach ($proveedores as $prov)
-            <tr class="border-b border-gray-700">
-                <td class="p-3">{{ $prov->id }}</td>
-                <td class="p-3">{{ $prov->nombre }}</td>
-                <td class="p-3">{{ $prov->telefono }}</td>
-                <td class="p-3">{{ $prov->email }}</td>
-                <td class="p-3 flex gap-2">
+    <div class="w-full overflow-x-auto mt-6">
+        <table class="min-w-full table-auto border border-gray-200 rounded-lg">
+            <thead class="bg-slate-100 border-b border-slate-200">
+                <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">ID</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Nombre</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Teléfono</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Email</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-slate-700">Acciones</th>
+                </tr>
+            </thead>
 
-                    <a href="{{ route('proveedores.edit', $prov->id) }}"
-                       class="bg-yellow-500 px-3 py-1 rounded">
-                        Editar
-                    </a>
+            <tbody>
+                @forelse ($proveedores as $index => $prov)
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-all duration-300 opacity-0 hover:scale-[1.01] hover:shadow-sm"
+                        style="animation: slideIn 0.4s ease-out {{ 0.1 * ($index + 1) }}s forwards;">
+                        <td class="px-6 py-4 text-slate-600 font-medium">{{ $prov->id }}</td>
+                        <td class="px-6 py-4 text-slate-800 font-medium">{{ $prov->nombre }}</td>
+                        <td class="px-6 py-4 text-slate-600">{{ $prov->telefono ?? 'Sin teléfono' }}</td>
+                        <td class="px-6 py-4 text-slate-600">{{ $prov->email ?? 'Sin email' }}</td>
 
-                    <form action="{{ route('proveedores.destroy', $prov->id) }}" method="POST"
-                          onsubmit="return confirm('¿Eliminar proveedor?');">
-                        @csrf
-                        @method('DELETE')
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
 
-                        <button class="bg-red-600 px-3 py-1 rounded">
-                            Eliminar
-                        </button>
-                    </form>
+                                <a href="{{ route('proveedores.edit', $prov->id) }}" 
+                                   class="text-blue-600 hover:text-blue-700 font-semibold text-sm transition-all duration-300 hover:scale-110 inline-block">
+                                    Editar
+                                </a>
 
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+                                <form action="{{ route('proveedores.destroy', $prov->id) }}" 
+                                      method="POST"
+                                      onsubmit="return confirm('¿Seguro que deseas eliminar este proveedor?');"
+                                      class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="text-red-600 hover:text-red-700 font-semibold text-sm transition-all duration-300 hover:scale-110">
+                                        Eliminar
+                                    </button>
+                                </form>
 
-</div>
+                            </div>
+                        </td>
+                    </tr>
+
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-slate-500 opacity-0 animate-[fadeInUp_0.6s_ease-out_0.2s_forwards]">
+                                <svg class="w-16 h-16 mb-4 text-slate-300 animate-[pulse_2s_ease-in-out_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <p class="text-lg font-medium mb-1">No hay proveedores registrados</p>
+                                <p class="text-sm">Comienza agregando tu primer proveedor</p>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <style>
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    </style>
 @endsection

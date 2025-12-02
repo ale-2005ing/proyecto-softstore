@@ -3,27 +3,35 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;                  // ✅ IMPORTANTE
-use Illuminate\Support\Facades\Hash;  // ✅ IMPORTANTE
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
         // ADMIN
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('admin123'),
-            'role' => 'admin',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('admin123'),
+            ]
+        );
+
+        $admin->syncRoles(['admin']);
 
         // EMPLEADO
-        User::create([
-            'name' => 'Empleado',
-            'email' => 'empleado@empresa.com',
-            'password' => Hash::make('empleado123'),
-            'role' => 'empleado',
-        ]);
+        $empleado = User::firstOrCreate(
+            ['email' => 'empleado@empresa.com'],
+            [
+                'name' => 'Empleado',
+                'password' => Hash::make('empleado123'),
+            ]
+        );
+
+        $empleado->syncRoles(['empleado']);
+
+        $this->command->info('✅ Usuarios creados/actualizados correctamente');
     }
 }

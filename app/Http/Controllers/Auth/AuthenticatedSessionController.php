@@ -26,13 +26,15 @@ public function store(LoginRequest $request): RedirectResponse
 {
     $request->authenticate();
 
-    $user = $request->user();
+     $request->session()->regenerate();
 
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.panel');
+    $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+    return redirect()->route('admin.panel');
     }
 
-    if ($user->role === 'empleado') {
+        if ($user->hasRole('empleado')) {
         return redirect()->route('empleado.panel');
     }
 

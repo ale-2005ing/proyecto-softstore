@@ -41,68 +41,51 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos', 'filtro'));
     }
 
-    public function create()
-    {
+   public function create()
+{
     $categorias = Categoria::all();
     $proveedores = Proveedor::all();
-    $clientes = \App\Models\Cliente::all(); // ← Agregar esta línea
+    $clientes = \App\Models\Cliente::all();
     
-    return view('productos.create', compact('categorias', 'proveedores', 'clientes')); // ← Agregar 'clientes'
-    }
+    return view('productos.create', compact('categorias', 'proveedores', 'clientes'));
+}
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'precio' => 'required|numeric|min:0',
-            'categoria_id' => 'nullable|exists:categorias,id',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:50',
+        'descripcion' => 'nullable|string|max:150',
+        'precio' => 'required|numeric|min:0',
+        'cantidad' => 'required|integer|min:1|max:9999',
+        'categoria_id' => 'nullable|exists:categorias,id',
+        'proveedor_id' => 'nullable|exists:proveedores,id', // ← Validación del proveedor
+    ]);
 
-        // 🔎 Buscar si existe un producto con el mismo nombre
-        $producto = Producto::where('nombre', $request->nombre)->first();
+    // 🔎 Buscar si existe un producto con el mismo nombre
+    $producto = Producto::where('nombre', $request->nombre)->first();
 
-        if ($producto) {
-            // Si ya existe, simplemente actualizamos el stock
-            $producto->stock += 1;
-            $producto->save();
-
-            // 🔔 Verificar si el stock sigue bajo después de aumentar
-            if ($producto->stock <= $producto->stock_min) {
-                $admins = User::where('role', 'admin')->get();
-                foreach($admins as $admin) {
-                    $admin->notify(new ProductoBajoStockNotification($producto));
-                }
-            }
-
-            return redirect()
-                ->route('productos.index')
-                ->with('success', 'Stock aumentado del producto existente.');
+    if ($producto) {
+        // Si ya existe, aumentamos el stock con la cantidad ingresada
+        $cantidadAnterior = $producto->stock;
+        $producto->stock += $request->cantidad;
+        
+        // Actualizar precio, descripción, categoría y proveedor
+        $producto->precio = $request->precio;
+        if ($request->filled('descripcion')) {
+            $producto->descripcion = $request->descripcion;
         }
-
-        // Si NO existe, lo creamos desde cero
-        $producto = Producto::create([
-            'nombre' => $request->nombre,
-            'precio' => $request->precio,
-            'stock' => 1,
-            'categoria_id' => $request->categoria_id,
-            'proveedor_id' => null,
-            'stock_min' => 1,
-            'stock_max' => 9999,
-        ]);
-
-        // 🔔 Notificar que se creó un nuevo producto
-        auth::user()->notify(new ProductoCreadoNotification($producto));
-
-        // 🔔 Notificar también a todos los administradores
-        $admins = User::where('role', 'admin')->get();
-        foreach($admins as $admin) {
-            if($admin->id !== auth::id()) {
-                $admin->notify(new ProductoCreadoNotification($producto));
-            }
+        if ($request->filled('categoria_id')) {
+            $producto->categoria_id = $request->categoria_id;
         }
+        if ($request->filled('proveedor_id')) { // ← Actualizar proveedor
+            $producto->proveedor_id = $request->proveedor_id;
+        }
+        
+        $producto->save();
 
-        // 🔔 Verificar si el producto se creó con stock bajo
+        // 🔔 Verificar si el stock sigue bajo después de aumentar
         if ($producto->stock <= $producto->stock_min) {
+            $admins = User::where('role', 'admin')->get();
             foreach($admins as $admin) {
                 $admin->notify(new ProductoBajoStockNotification($producto));
             }
@@ -110,15 +93,49 @@ class ProductoController extends Controller
 
         return redirect()
             ->route('productos.index')
-            ->with('success', 'Producto creado correctamente.');
+            ->with('success', "Producto '{$producto->nombre}' actualizado. Stock aumentado en {$request->cantidad} unidades (de {$cantidadAnterior} a {$producto->stock}).");
     }
 
-    public function edit(Producto $producto)
-    {
-        $categorias = Categoria::all();
-        $proveedores = Proveedor::all();
-        return view('productos.edit', compact('producto', 'categorias', 'proveedores'));
+    // Si NO existe, lo creamos desde cero con la cantidad ingresada
+    $producto = Producto::create([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'precio' => $request->precio,
+        'stock' => $request->cantidad, // Usar la cantidad ingresada como stock inicial
+        'categoria_id' => $request->categoria_id,
+        'proveedor_id' => $request->proveedor_id, // ← Guardar el proveedor seleccionado
+        'stock_min' => 1,
+        'stock_max' => 9999,
+    ]);
+
+    // 🔔 Notificar que se creó un nuevo producto
+    auth::user()->notify(new ProductoCreadoNotification($producto));
+
+    // 🔔 Notificar también a todos los administradores
+    $admins = User::where('role', 'admin')->get();
+    foreach($admins as $admin) {
+        if($admin->id !== auth::id()) {
+            $admin->notify(new ProductoCreadoNotification($producto));
+        }
     }
+
+    // 🔔 Verificar si el producto se creó con stock bajo
+    if ($producto->stock <= $producto->stock_min) {
+        foreach($admins as $admin) {
+            $admin->notify(new ProductoBajoStockNotification($producto));
+        }
+    }
+
+    return redirect()
+        ->route('productos.index')
+        ->with('success', "Producto '{$producto->nombre}' creado exitosamente con {$request->cantidad} unidades en stock.");
+}
+        public function edit(Producto $producto)
+        {
+            $categorias = Categoria::all();
+            $proveedores = Proveedor::all();
+            return view('productos.edit', compact('producto', 'categorias', 'proveedores'));
+        }
 
     public function update(Request $request, Producto $producto)
     {

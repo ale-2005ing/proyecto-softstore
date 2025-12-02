@@ -63,4 +63,10 @@ protected $fillable = [
         $this->stock += $cantidad;
         $this->save();
     }
+   
+
+public function detalleVentas()
+{
+    return $this->hasMany(DetalleVenta::class); // O como se llame tu modelo
+}
 }
